@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @AllArgsConstructor
 @Getter
@@ -13,9 +15,9 @@ public class Url {
     @Setter
     private Long id;
     private String name;
-    private Long createdAt;
+    private LocalDateTime createdAt;
 
-    public Url(String name, Long createdAt) {
+    public Url(String name, LocalDateTime createdAt) {
         this.name = name;
         this.createdAt = createdAt;
     }

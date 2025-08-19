@@ -5,6 +5,8 @@ import hexlet.code.model.Url;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -14,7 +16,8 @@ public class UrlRepository extends BaseRepository {
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, url.getName());
-            stmt.setLong(2, url.getCreatedAt());
+            var createdAt = LocalDateTime.now();
+            stmt.setTimestamp(2, Timestamp.valueOf(createdAt));
             stmt.executeUpdate();
             var generatedKeys = stmt.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -34,7 +37,7 @@ public class UrlRepository extends BaseRepository {
             while (resultSet.next()) {
                 var id = resultSet.getLong("id");
                 var name = resultSet.getString("name");
-                var createdAt = resultSet.getLong("created_at");
+                var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
                 var url = new Url(id, name, createdAt);
                 result.add(url);
             }
@@ -50,7 +53,7 @@ public class UrlRepository extends BaseRepository {
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 var name = resultSet.getString("name");
-                var createdAt = resultSet.getLong("created_at");
+                var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
                 var url = new Url(id, name, createdAt);
                 return Optional.of(url);
             }

@@ -10,5 +10,6 @@ run:
 	./gradlew run
 installDist:
 	./gradlew installDist
-
+check:
+	./gradlew check
 .PHONY:build

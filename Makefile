@@ -10,3 +10,5 @@ test:
 	make -C ./app test
 installDist:
 	make -C ./app installDist
+check:
+	make -C ./app check

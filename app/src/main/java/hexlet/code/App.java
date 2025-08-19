@@ -1,18 +1,27 @@
 package hexlet.code;
 
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class App {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import hexlet.code.util.NamedRoutes;
+import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinJte;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code.
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+public class App {
+
+    public static Javalin getApp() throws Exception {
+        var app = Javalin.create(config -> {
+            config.bundledPlugins.enableDevLogging();
+            config.fileRenderer(new JavalinJte());
+        });
+
+        app.get(NamedRoutes.rootPath(), ctx ->{
+            ctx.render("index.jte");
+        });
+
+        return app;
+    }
+
+    public static void main(String[] args) throws Exception {
+        var app = getApp();
+        app.start(Integer.valueOf(System.getenv().getOrDefault("PORT", "7071")));
     }
 }

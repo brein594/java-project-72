@@ -2,8 +2,8 @@ FROM gradle:8.12.1-jdk21
 
 WORKDIR /app
 
-COPY . .
+COPY /app .
 
-RUN ["./make", "build"]
+RUN ["./gradlew", "build"]
 
-CMD ["./make", "run"]
+CMD ["./gradlew", "run"]

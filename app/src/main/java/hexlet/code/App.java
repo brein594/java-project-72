@@ -1,6 +1,5 @@
 package hexlet.code;
 
-
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
@@ -13,7 +12,7 @@ public class App {
             config.fileRenderer(new JavalinJte());
         });
 
-        app.get(NamedRoutes.rootPath(), ctx ->{
+        app.get(NamedRoutes.rootPath(), ctx -> {
             ctx.render("index.jte");
         });
 

@@ -10,3 +10,5 @@ run:
 	./gradlew run
 installDist:
 	./gradlew installDist
+
+.PHONY:build

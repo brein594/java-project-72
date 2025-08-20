@@ -1,5 +1,5 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
+//import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+//import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("java")
@@ -20,9 +20,9 @@ repositories {
 dependencies {
     implementation("io.javalin:javalin:6.7.0")
     implementation("org.slf4j:slf4j-simple:2.0.7")
-    implementation("gg.jte:jte:3.1.9")
+    implementation("gg.jte:jte:3.1.16")
     implementation("io.javalin:javalin-rendering:6.1.3")
-    implementation("org.apache.commons:commons-lang3:3.0")
+    implementation("org.apache.commons:commons-lang3:3.18.0")
     implementation("com.h2database:h2:2.2.220")
     implementation("com.zaxxer:HikariCP:5.0.1")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
@@ -31,13 +31,13 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+//    testLogging {
+ //       exceptionFormat = TestExceptionFormat.FULL
+//        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
         // showStackTraces = true
         // showCauses = true
-        showStandardStreams = true
-    }
+ //       showStandardStreams = true
+  //  }
 }
 application {
     mainClass = "hexlet.code.App"

@@ -1,9 +1,9 @@
-FROM gradle:8.12.1-jdk21
+FROM gradle:8.13-jdk-21-and-23-alpine
 
 WORKDIR /app
 
 COPY /app .
 
-RUN ["./gradlew", "build"]
+RUN ["./gradlew","clean", "build"]
 
 CMD ["./gradlew", "run"]

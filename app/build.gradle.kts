@@ -1,5 +1,5 @@
-//import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-//import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("java")
@@ -10,6 +10,9 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+application {
+    mainClass.set("hexlet.code.App")
+}
 group = "hexlet.code"
 version = "1.0-SNAPSHOT"
 
@@ -25,23 +28,23 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.18.0")
     implementation("com.h2database:h2:2.2.220")
     implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("io.javalin:javalin-testtools:6.2.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 tasks.test {
     useJUnitPlatform()
-//    testLogging {
- //       exceptionFormat = TestExceptionFormat.FULL
-//        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
-        // showStackTraces = true
-        // showCauses = true
- //       showStandardStreams = true
-  //  }
+    testLogging {
+        exceptionFormat = TestExceptionFormat.FULL
+        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+         //showStackTraces = true
+         //showCauses = true
+       showStandardStreams = true
+    }
 }
-application {
-    mainClass = "hexlet.code.App"
-}
+
 
 checkstyle {
     toolVersion = "10.12.4"

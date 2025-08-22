@@ -16,8 +16,7 @@ public class UrlRepository extends BaseRepository {
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, url.getName());
-            var createdAt = LocalDateTime.now();
-            stmt.setTimestamp(2, Timestamp.valueOf(createdAt));
+            stmt.setTimestamp(2, Timestamp.valueOf(url.getCreatedAt()));
             stmt.executeUpdate();
             var generatedKeys = stmt.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -29,7 +28,7 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static ArrayList<Url> getUrls() throws SQLException {
-        var sql = "SELECT * FROM urls WHERE id = ?";
+        var sql = "SELECT * FROM urls";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();

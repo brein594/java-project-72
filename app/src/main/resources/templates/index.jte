@@ -1,13 +1,23 @@
-<!doctype html>
-<html lang ="ru">
-<head>
-    <meta charset="utf-8">
-    <title>Hello Hexlet</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-</head>
-<body>
-    <main>
+@import hexlet.code.dto.urls.BuildUrlPage
+@param BuildUrlPage page
+
+@template.layout.page(
+content=@`
+    @if(page.getErrors() != null)
+        <ul>
+            @for(var validator : page.getErrors().values())
+                @for(var error : validator)
+                    <li>${error.getMessage()}</li>
+                @endfor
+            @endfor
+        </ul>
+    @endif
         <h2>Hello World!</h2>
-    </main>
-</body>
-</html>
+        <form action = "/urls" method = "post">
+            <div><label>
+                    Добавьте адрес
+                    <input type="text" required name="name">
+                </label></div>
+            <button type="submit">Добавить</button>
+        </form>
+`)

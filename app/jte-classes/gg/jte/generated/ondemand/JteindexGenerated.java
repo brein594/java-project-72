@@ -1,12 +1,35 @@
 package gg.jte.generated.ondemand;
+import hexlet.code.dto.urls.BuildUrlPage;
 @SuppressWarnings("unchecked")
 public final class JteindexGenerated {
 	public static final String JTE_NAME = "index.jte";
-	public static final int[] JTE_LINE_INFO = {12,12,12,12,12,12,12,12,12,12,12,12};
-	public static void render(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor) {
-		jteOutput.writeContent("<!doctype html>\n<html lang =\"ru\">\n<head>\n    <meta charset=\"utf-8\">\n    <title>Hello Hexlet</title>\n    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">\n</head>\n<body>\n    <main>\n        <h2>Hello World!</h2>\n    </main>\n</body>\n</html>");
+	public static final int[] JTE_LINE_INFO = {0,0,1,1,1,1,3,3,4,4,5,5,7,7,8,8,9,9,9,10,10,11,11,13,13,22,22,22,23,23,23,1,1,1,1};
+	public static void render(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor, BuildUrlPage page) {
+		jteOutput.writeContent("\n");
+		gg.jte.generated.ondemand.layout.JtepageGenerated.render(jteOutput, jteHtmlInterceptor, new gg.jte.html.HtmlContent() {
+			public void writeTo(gg.jte.html.HtmlTemplateOutput jteOutput) {
+				jteOutput.writeContent("\n    ");
+				if (page.getErrors() != null) {
+					jteOutput.writeContent("\n        <ul>\n            ");
+					for (var validator : page.getErrors().values()) {
+						jteOutput.writeContent("\n                ");
+						for (var error : validator) {
+							jteOutput.writeContent("\n                    <li>");
+							jteOutput.setContext("li", null);
+							jteOutput.writeUserContent(error.getMessage());
+							jteOutput.writeContent("</li>\n                ");
+						}
+						jteOutput.writeContent("\n            ");
+					}
+					jteOutput.writeContent("\n        </ul>\n    ");
+				}
+				jteOutput.writeContent("\n        <h2>Hello World!</h2>\n        <form action = \"/urls\" method = \"post\">\n            <div><label>\n                    Добавьте адрес\n                    <input type=\"text\" required name=\"name\">\n                </label></div>\n            <button type=\"submit\">Добавить</button>\n        </form>\n");
+			}
+		}, null);
+		jteOutput.writeContent("\n");
 	}
 	public static void renderMap(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor, java.util.Map<String, Object> params) {
-		render(jteOutput, jteHtmlInterceptor);
+		BuildUrlPage page = (BuildUrlPage)params.get("page");
+		render(jteOutput, jteHtmlInterceptor, page);
 	}
 }

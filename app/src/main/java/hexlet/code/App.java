@@ -2,6 +2,8 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.controller.UrlsController;
+import hexlet.code.dto.urls.BuildUrlPage;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -10,11 +12,14 @@ import io.javalin.rendering.template.JavalinJte;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+
+import static io.javalin.rendering.template.TemplateUtil.model;
 
 
 public class App {
@@ -59,8 +64,12 @@ public class App {
         System.out.println(url2.getName());
 */
         app.get(NamedRoutes.rootPath(), ctx -> {
-            ctx.render("index.jte");
+            var page = new BuildUrlPage();
+            ctx.render("index.jte", model("page", page));
         });
+        app.get(NamedRoutes.urlsPaths("{id}"), UrlsController::show);
+        app.get(NamedRoutes.urlsPaths(), UrlsController::index);
+        app.post(NamedRoutes.urlsPaths(), UrlsController::create);
 
         return app;
     }

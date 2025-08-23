@@ -70,7 +70,7 @@ public class App {
         app.get(NamedRoutes.urlsPaths("{id}"), UrlsController::show);
         app.get(NamedRoutes.urlsPaths(), UrlsController::index);
         app.post(NamedRoutes.urlsPaths(), UrlsController::create);
-
+        app.post(NamedRoutes.checkPaths("{id}"), UrlsController::check);
         return app;
     }
 

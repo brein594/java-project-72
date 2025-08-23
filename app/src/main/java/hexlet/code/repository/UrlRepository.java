@@ -3,6 +3,9 @@ package hexlet.code.repository;
 import hexlet.code.model.Url;
 
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -57,6 +60,17 @@ public class UrlRepository extends BaseRepository {
                 return Optional.of(url);
             }
             return Optional.empty();
+        }
+    }
+    public static boolean findSaveRepository(String name) throws SQLException, URISyntaxException {
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt =conn.prepareStatement(sql)) {
+            var nameURI = new URI(name);
+            var nameSave = nameURI.getScheme() + "//:" + nameURI.getAuthority();
+             stmt.setString(1, nameSave);
+             var resultSet = stmt.executeQuery();
+             return resultSet.next();
         }
     }
 }

@@ -4,20 +4,47 @@
 @template.layout.page(
 content=@`
     @if(page.getErrors() != null)
+        <div class="rounded-0 m-0 alert alert-dismissible fade show alert-danger" role="alert">
         <ul>
             @for(var validator : page.getErrors().values())
                 @for(var error : validator)
-                    <li>${error.getMessage()}</li>
+                    <li><p class="alert-heading">${error.getMessage()}</p></li>
                 @endfor
             @endfor
         </ul>
+        </div>
     @endif
-        <h2>Hello World!</h2>
+
+    <div class="container-fluid bg-dark p-5">
+        <div class="row">
+            <div class="col-md-10 col-lg-8 mx-auto text-white">
+                <h1 class="display-3 mb-0">Анализатор страниц</h1>
+                <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
+                <form action="/urls" method="post" class="rss-form text-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <input id="url-input" autofocus="" type="url" required="" name="name" aria-label="url" class="form-control w-100" placeholder="ссылка" autocomplete="off">
+                                <label for="url-input">Ссылка</label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="h-100 btn btn-lg btn-primary px-sm-5">Проверить</button>
+                        </div>
+                    </div>
+                </form>
+                <p class="mt-2 mb-0 text-muted">Пример: https://www.example.com</p>
+            </div>
+        </div>
+    </div>
+
+     <!--<h2>Hello World!</h2>
         <form action = "/urls" method = "post">
             <div><label>
                     Добавьте адрес
                     <input type="text" required name="name">
                 </label></div>
             <button type="submit">Добавить</button>
-        </form>
+        </form> -->
+
 `)

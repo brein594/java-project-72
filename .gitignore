@@ -3,4 +3,4 @@
 /app/build/
 /app/.idea/
 get-docker.sh
-/app/jte-classes
+/app/jte-classes/*

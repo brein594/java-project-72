@@ -22,9 +22,9 @@ jobs:
         run: ./gradlew build --no-problems-report
         working-directory: ./app
       - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v9.0.0
+        uses: qltysh/qlty-action/coverage@v2
         env:
-          CC_TEST_REPORTER_ID: ${{secrets.QLTY_COVERAGE_TOKEN}}
+          QLTY_COVERAGE_TOKEN: ${{secrets.QLTY_COVERAGE_TOKEN}}
           JACOCO_SOURCE_PATH: ${{github.workspace}}/app/src/main/java
         with:
           workingDirectory: ./app

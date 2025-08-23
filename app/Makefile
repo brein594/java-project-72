@@ -3,7 +3,7 @@ run-dist:
 clean:
 	./gradlew clean
 build:
-	./gradlew build
+	./gradlew build --no-problems-report
 test:
 	./gradlew test
 run:

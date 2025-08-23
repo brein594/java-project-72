@@ -5,6 +5,7 @@ plugins {
     id("java")
     application
     checkstyle
+    jacoco
     id("org.sonarqube") version "6.2.0.5505"
     id("io.freefair.lombok") version "8.14"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -56,4 +57,8 @@ sonar {
         property("sonar.projectKey", "brein594_java-project-72")
         property("sonar.organization", "brein594")
     }
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports { xml.required.set(true) }
 }

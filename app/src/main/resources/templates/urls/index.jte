@@ -4,8 +4,6 @@
 @template.layout.page(
 page = page,
 content =@`
-
-
         <div class="container-lg mt-5">
             <h1>Сайты</h1>
             <table class = "table table-border table-hover mt-3">
@@ -29,5 +27,4 @@ content =@`
                 </tbody>
             </table>
         </div>
-
 `)

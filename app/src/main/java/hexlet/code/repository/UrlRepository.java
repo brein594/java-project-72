@@ -44,7 +44,7 @@ public class UrlRepository extends BaseRepository {
             return result;
         }
     }
-
+/*
     public static Optional<Url> find(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
@@ -61,6 +61,8 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
+ */
+
     public static boolean findSaveRepository(String name) throws SQLException, URISyntaxException {
         var sql = "SELECT * FROM urls WHERE name = ?";
         try (var conn = dataSource.getConnection();
@@ -72,4 +74,15 @@ public class UrlRepository extends BaseRepository {
             return resultSet.next();
         }
     }
+    public static void removeAll() {
+        var sql="DELETE FROM urls";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

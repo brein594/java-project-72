@@ -56,7 +56,8 @@ public class UrlsController {
             var name = ctx.formParam("name");
             var page = new BuildUrlPage(name, e.getErrors());
             ctx.sessionAttribute("addUrl", "Некорректный URL");
-            ctx.render("index.jte", model("page", page));
+            //ctx.render("index.jte", model("page", page));
+            ctx.redirect(NamedRoutes.urlsPaths());
         } catch (SQLException | URISyntaxException er) {
             throw new RuntimeException(er);
         }

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Optional;
+
 
 public class UrlRepository extends BaseRepository {
     public static void save(Url url) throws SQLException {
@@ -79,11 +79,9 @@ public class UrlRepository extends BaseRepository {
         var sql = "DELETE FROM urls";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
-
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 }

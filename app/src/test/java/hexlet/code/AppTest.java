@@ -32,6 +32,7 @@ public class AppTest {
             assertThat(response.body().string()).contains("Анализатор страниц");
         });
     }
+
     @Test
     public void testUrlsPage() {
         JavalinTest.test(app, (server, client) -> {
@@ -45,7 +46,7 @@ public class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
             UrlRepository.save(url);
-            var response = client.get("/urls/"+url.getId());
+            var response = client.get("/urls/" + url.getId());
             assertThat(response.code()).isEqualTo(200);
         });
     }
@@ -63,7 +64,7 @@ public class AppTest {
 
     @Test
     public void testUrlNotFound() throws Exception {
-        JavalinTest.test(app, (server, client) ->{
+        JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls/999999");
             assertThat(response.code()).isEqualTo(500);
         });

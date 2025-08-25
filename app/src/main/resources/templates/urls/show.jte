@@ -1,6 +1,9 @@
 @import hexlet.code.dto.urls.UrlPage
 @import java.time.format.DateTimeFormatter
+
+
 @param UrlPage page
+
 
 @template.layout.page(
     page = page,
@@ -39,6 +42,16 @@
             <th class="col-2">Дата проверки</th>
         </tr></thead>
         <tbody>
+        @for (var pageCheck : page.getUrlCheck() )
+        <tr>
+            <td>${pageCheck.getId()}</td>
+            <td>${pageCheck.getStatusCode()}</td>
+            <td>${pageCheck.getTitle()}</td>
+            <td>${pageCheck.getH1()}</td>
+            <td>${pageCheck.getDescription()}</td>
+            <td>${pageCheck.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}</td>
+        </tr>
+        @endfor
         </tbody>
     </table>
     <p><a href="/">Home</a></p>

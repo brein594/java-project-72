@@ -2,7 +2,6 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -84,4 +83,5 @@ public class UrlRepository extends BaseRepository {
             throw new RuntimeException(e);
         }
     }
+
 }

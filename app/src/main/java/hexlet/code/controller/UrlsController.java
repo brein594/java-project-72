@@ -4,6 +4,7 @@ import hexlet.code.dto.urls.BuildUrlPage;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
@@ -66,7 +67,7 @@ public class UrlsController {
     public static void show(Context ctx) {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         try {
-            var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)));
+            var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)), UrlCheckRepository.getUrlChecks(id));
             /*var url = UrlRepository.find(id)
                     .orElseThrow(() -> new NotFoundResponse("URL c id " + id + " не найден"));
             var page = new UrlPage(url);*/
@@ -87,7 +88,4 @@ public class UrlsController {
         }
     }
 
-    public static void check(Context ctx) {
-
-    }
 }

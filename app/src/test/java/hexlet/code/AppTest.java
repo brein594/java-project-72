@@ -4,22 +4,22 @@ import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class AppTest {
     private Javalin app;
 
     @BeforeEach
-    public final void setUp() throws IOException, SQLException {
+    public final void setUp() throws SQLException {
         app = App.getApp();
         UrlRepository.removeAll();
     }
@@ -76,8 +76,10 @@ public class AppTest {
             var requestBody = "name=https://wwww.exemple.com";
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
-            Assertions.assertNotNull(response.body());
+            assertNotNull(response.body());
             assertThat(response.body().string()).contains("https://wwww.exemple.com");
         });
     }
+
+
 }

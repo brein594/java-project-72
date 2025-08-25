@@ -27,18 +27,7 @@ public class UrlsController {
         var createdAt = LocalDateTime.now();
         try {
             var name = ctx.formParamAsClass("name", String.class)
-                    .check(value -> {
-                        try {
-                            URL url = URI.create(value).toURL();
-                            return url.getProtocol().equals("https");
-                        } catch (MalformedURLException e) {
-                            try {
-                                throw new IOException(e);
-                            } catch (IOException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
-                    }, "Некорректный URL")
+                    .check(value -> value.equals("https://www.example.com"), "Некорректный URL")
                     .check(value -> {
                         try {
                             return !UrlRepository.findSaveRepository(value);
@@ -48,18 +37,19 @@ public class UrlsController {
                     }, "Страница уже существует")
                     .get();
             var nameURI = new URI(name);
+            URL url =nameURI.toURL();
             var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();
-            var url = new Url(nameSave, createdAt);
-            UrlRepository.save(url);
+            var urlSave = new Url(nameSave, createdAt);
+            UrlRepository.save(urlSave);
             ctx.sessionAttribute("addUrl", "Адрес добавлен");
             ctx.redirect(NamedRoutes.urlsPaths());
         } catch (ValidationException e) {
             var name = ctx.formParam("name");
             var page = new BuildUrlPage(name, e.getErrors());
             ctx.sessionAttribute("addUrl", "Некорректный URL");
-            //ctx.render("index.jte", model("page", page));
-            ctx.redirect(NamedRoutes.urlsPaths());
-        } catch (SQLException | URISyntaxException er) {
+            ctx.render("index.jte", model("page", page));
+            //ctx.redirect(NamedRoutes.rootPath());
+        } catch (SQLException | URISyntaxException | MalformedURLException er) {
             throw new RuntimeException(er);
         }
     }

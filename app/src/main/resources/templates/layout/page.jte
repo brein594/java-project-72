@@ -16,7 +16,7 @@
             crossorigin="anonymous"></script>
 </head>
 <body class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Анализатор страниц</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -31,9 +31,9 @@
         </div>
     </div>
 </nav>
-<main class="flex-grow-1">
+    <main class="flex-grow-1">
     @if( page != null && page.getFlash() != null )
-        <div class="alert alert-success" role="alert">
+        <div class="rounded-0 m-0 alert alert-dismissible fade show alert-success" role="alert">
             <p class="m-0">${page.getFlash()}</p>
             <!--<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
         </div>
@@ -42,10 +42,10 @@
         ${content}
     </section>
 </main>
-<footer class="footer border-bottom py-3 mt-5 bg-light">
+    <footer class="footer border-bottom py-3 mt-5 bg-light">
     <div class="container-xl">
         <div class="text-center">
-            " created by "
+            created by
             <a href="https://ru.hexlet.io" target="_blank">Hexlet</a>
         </div>
     </div>

@@ -5,6 +5,7 @@ import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 
+import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.validation.ValidationException;
 
@@ -25,15 +26,21 @@ public class UrlCheksController {
             var urlCheck = new UrlCheck(status_code, title, h1, description, url_id, createdAt);
             UrlCheckRepository.save(urlCheck);
             ctx.sessionAttribute("addUrl", "Страница успешно проверена");
-            var page = new UrlPage(UrlRepository.getUrls().get((int) (url_id - 1L)),
-                    UrlCheckRepository.getUrlChecks(url_id));
-            ctx.render("urls/show.jte", model("page", page));
-        } catch (ValidationException e) {
-            ctx.sessionAttribute("addUrl", "Ошибка проверки");
+           /*
             var page = new UrlPage(UrlRepository.getUrls().get((int) (url_id - 1L)),
                     UrlCheckRepository.getUrlChecks(url_id));
             ctx.render("urls/show.jte", model("page", page));
 
+            */
+            ctx.redirect(NamedRoutes.urlsPaths(url_id));
+        } catch (ValidationException e) {
+            ctx.sessionAttribute("addUrl", "Ошибка проверки");
+            /*
+            var page = new UrlPage(UrlRepository.getUrls().get((int) (url_id - 1L)),
+                    UrlCheckRepository.getUrlChecks(url_id));
+            ctx.render("urls/show.jte", model("page", page));
+*/
+            ctx.redirect(NamedRoutes.urlsPaths(url_id));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

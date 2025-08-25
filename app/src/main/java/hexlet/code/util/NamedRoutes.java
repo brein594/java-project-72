@@ -18,6 +18,6 @@ public class NamedRoutes {
     }
 
     public static String checkPaths(String id) {
-        return "/urls/" + id + "/check";
+        return "/urls/" + id + "/checks";
     }
 }

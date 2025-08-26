@@ -27,7 +27,6 @@ public class UrlCheksController {
         var url = UrlRepository.find(url_id)
                 .orElseThrow(() -> new NotFoundResponse("Url with id " + url_id + " not found"));
         try {
-
             HttpResponse<String> response = Unirest.get(url.getName())
                     .header("Accept", "application/json")
                     .asString();
@@ -48,12 +47,6 @@ public class UrlCheksController {
             var urlCheck = new UrlCheck(status_code, title, h1, description, url_id, createdAt);
             UrlCheckRepository.save(urlCheck);
             ctx.sessionAttribute("addUrl", "Страница успешно проверена");
-           /*
-            var page = new UrlPage(UrlRepository.getUrls().get((int) (url_id - 1L)),
-                    UrlCheckRepository.getUrlChecks(url_id));
-            ctx.render("urls/show.jte", model("page", page));
-
-            */
             ctx.redirect(NamedRoutes.urlsPaths(url_id));
         } catch (ValidationException e) {
             ctx.sessionAttribute("addUrl", "Ошибка проверки");

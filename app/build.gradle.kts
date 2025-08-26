@@ -31,15 +31,14 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("io.javalin:javalin-testtools:6.2.0")
     implementation("org.postgresql:postgresql:42.7.5")
-    implementation("com.konghq:unirest-java-core:4.4.5")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.27.3")
-    testImplementation("com.konghq:unirest-java-core:4.4.5")
-    implementation("com.konghq:unirest-object-mappers-gson:4.2.9")
-    implementation("com.konghq:unirest-modules-jackson:4.5.0")
+    implementation("com.konghq:unirest-java-core:4.4.5")
     implementation("com.konghq:unirest-java-bom:4.2.4")
     implementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
+    implementation("org.jsoup:jsoup:1.11.3")
+
 
 }
 

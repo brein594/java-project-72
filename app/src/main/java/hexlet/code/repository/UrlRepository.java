@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 public class UrlRepository extends BaseRepository {
@@ -43,7 +44,7 @@ public class UrlRepository extends BaseRepository {
             return result;
         }
     }
-/*
+
     public static Optional<Url> find(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
@@ -60,15 +61,15 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
- */
+
 
     public static boolean findSaveRepository(String name) throws SQLException, URISyntaxException {
         var sql = "SELECT * FROM urls WHERE name = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
-            var nameURI = new URI(name);
-            var nameSave = nameURI.getScheme() + "//:" + nameURI.getAuthority();
-            stmt.setString(1, nameSave);
+            //var nameURI = new URI(name);
+            //var nameSave = nameURI.getScheme() + "//:" + nameURI.getAuthority();
+            stmt.setString(1, name);
             var resultSet = stmt.executeQuery();
             return resultSet.next();
         }

@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -27,21 +28,18 @@ public class UrlsController {
         var createdAt = LocalDateTime.now();
         try {
             var name = ctx.formParamAsClass("name", String.class)
-                    .check(value -> value.equals("https://www.example.com"), "Некорректный URL")
-                    .check(value -> {
-                        try {
-                            return !UrlRepository.findSaveRepository(value);
-                        } catch (SQLException | URISyntaxException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }, "Страница уже существует")
+                    .check(value -> Pattern.matches("https?://[\\w.-]+(?:/[^\\s\"']*)?",value), "Некорректный URL")
                     .get();
             var nameURI = new URI(name);
-            URL url =nameURI.toURL();
+            URL url = nameURI.toURL();
             var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();
             var urlSave = new Url(nameSave, createdAt);
-            UrlRepository.save(urlSave);
-            ctx.sessionAttribute("addUrl", "Адрес добавлен");
+            if (!UrlRepository.findSaveRepository(nameSave)) {
+                UrlRepository.save(urlSave);
+                ctx.sessionAttribute("addUrl", "Адрес добавлен");
+            } else {
+                ctx.sessionAttribute("addUrl", "Страница уже существует");
+            }
             ctx.redirect(NamedRoutes.urlsPaths());
         } catch (ValidationException e) {
             var name = ctx.formParam("name");

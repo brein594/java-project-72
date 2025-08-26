@@ -31,8 +31,8 @@ public class UrlsController {
                     .check(value -> Pattern.matches("https?://[\\w.-]+(?:/[^\\s\"']*)?",value), "Некорректный URL")
                     .get();
             var nameURI = new URI(name);
-            URL url = nameURI.toURL();
-            var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();
+            var nameSave = nameURI.toURL().toString();
+            //var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();
             var urlSave = new Url(nameSave, createdAt);
             if (!UrlRepository.findSaveRepository(nameSave)) {
                 UrlRepository.save(urlSave);
@@ -46,7 +46,6 @@ public class UrlsController {
             var page = new BuildUrlPage(name, e.getErrors());
             ctx.sessionAttribute("addUrl", "Некорректный URL");
             ctx.render("index.jte", model("page", page));
-            //ctx.redirect(NamedRoutes.rootPath());
         } catch (SQLException | URISyntaxException | MalformedURLException er) {
             throw new RuntimeException(er);
         }
@@ -56,9 +55,6 @@ public class UrlsController {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         try {
             var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)), UrlCheckRepository.getUrlChecks(id));
-            /*var url = UrlRepository.find(id)
-                    .orElseThrow(() -> new NotFoundResponse("URL c id " + id + " не найден"));
-            var page = new UrlPage(url);*/
             ctx.render("urls/show.jte", model("page", page));
         } catch (SQLException exception) {
             throw new RuntimeException(exception);

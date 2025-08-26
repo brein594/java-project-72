@@ -77,18 +77,6 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-       /*
-        String response = String.valueOf(Unirest.get("https://kong.github.io/unirest-java/responses.html").asString().getStatus());
-        System.out.println("Status " + response);
-        String response1 = String.valueOf(Unirest.get("https://kong.github.io/unirest-java/responses.html").asString().getHeaders());
-        System.out.println("Headers " + response1);
-        String response2 = String.valueOf(Unirest.get("https://kong.github.io/unirest-java/responses.html").asString().getBody());
-        System.out.println("body " + response2);
-        String response3 = String.valueOf(Unirest.get("https://kong.github.io/unirest-java/responses.html").asString().getClass());
-        System.out.println("Status " + response3);
-        String response4 = String.valueOf(Unirest.get("https://kong.github.io/unirest-java/responses.html").asString().getCookies());
-        System.out.println("Status " + response4);
-*/
 
         var app = getApp();
         app.start(getPort());

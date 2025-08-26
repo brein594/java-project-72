@@ -11,6 +11,7 @@ import io.javalin.http.NotFoundResponse;
 import io.javalin.validation.ValidationException;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -43,7 +44,6 @@ public class UrlCheksController {
             if (doc.selectFirst("description") != null) {
                 description = doc.selectFirst("h1").text();
             }
-            Unirest.shutDown();
             var urlCheck = new UrlCheck(status_code, title, h1, description, url_id, createdAt);
             UrlCheckRepository.save(urlCheck);
             ctx.sessionAttribute("addUrl", "Страница успешно проверена");
@@ -53,6 +53,12 @@ public class UrlCheksController {
             ctx.redirect(NamedRoutes.urlsPaths(url_id));
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }  catch (UnirestException e) {
+            ctx.sessionAttribute("addUrl", "Ошибка проверки");
+            ctx.redirect(NamedRoutes.urlsPaths(url_id));
+        } finally {
+            // Завершение всех фоновых запросов Unirest
+            Unirest.shutDown();
         }
     }
 }

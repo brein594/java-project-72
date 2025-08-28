@@ -10,23 +10,17 @@ import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import mockwebserver3.RecordedRequest;
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
@@ -111,10 +105,10 @@ public class AppTest {
         HttpResponse<String> response = Unirest.get(baseUrl.toString())
                 .header("Accept", "application/json")
                 .asString();
-        var status_code = response.getStatus();
+        var statusCode = response.getStatus();
         String html = response.getBody();
         assertThat(html).isEqualTo("hello, world!");
-        assertThat(status_code).isEqualTo(200);
+        assertThat(statusCode).isEqualTo(200);
         mockWebServer.close();
     }
 

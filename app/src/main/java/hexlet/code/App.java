@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
-import kong.unirest.core.HttpResponse;
-import kong.unirest.core.Unirest;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 

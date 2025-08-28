@@ -1,6 +1,5 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
@@ -18,20 +17,18 @@ import org.jsoup.nodes.Document;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
-import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class UrlCheksController {
     public static void create(Context ctx) throws SQLException {
-
-        var url_id = ctx.pathParamAsClass("id", Long.class).get();
+        var urlId = ctx.pathParamAsClass("id", Long.class).get();
         var createdAt = LocalDateTime.now();
-        var url = UrlRepository.find(url_id)
-                .orElseThrow(() -> new NotFoundResponse("Url with id " + url_id + " not found"));
+        var url = UrlRepository.find(urlId)
+                .orElseThrow(() -> new NotFoundResponse("Url with id " + urlId + " not found"));
         try {
             HttpResponse<String> response = Unirest.get(url.getName())
                     .header("Accept", "application/json")
                     .asString();
-            var status_code = response.getStatus();
+            var statusCode = response.getStatus();
             String html = response.getBody();
             Document doc = Jsoup.parse(html);
 
@@ -44,21 +41,17 @@ public class UrlCheksController {
             if (doc.selectFirst("description") != null) {
                 description = doc.selectFirst("h1").text();
             }
-            var urlCheck = new UrlCheck(status_code, title, h1, description, url_id, createdAt);
+            var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
             UrlCheckRepository.save(urlCheck);
             ctx.sessionAttribute("addUrl", "Страница успешно проверена");
-            ctx.redirect(NamedRoutes.urlsPaths(url_id));
-        } catch (ValidationException e) {
+        } catch (ValidationException | UnirestException | SQLException e) {
             ctx.sessionAttribute("addUrl", "Ошибка проверки");
-            ctx.redirect(NamedRoutes.urlsPaths(url_id));
-        } catch (SQLException e) {
             throw new RuntimeException(e);
-        }  catch (UnirestException e) {
-            ctx.sessionAttribute("addUrl", "Ошибка проверки");
-            ctx.redirect(NamedRoutes.urlsPaths(url_id));
         } finally {
             // Завершение всех фоновых запросов Unirest
             Unirest.shutDown();
+            ctx.redirect(NamedRoutes.urlsPaths(urlId));
         }
     }
+
 }

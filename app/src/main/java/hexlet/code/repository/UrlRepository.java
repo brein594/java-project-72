@@ -2,7 +2,6 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -60,7 +59,6 @@ public class UrlRepository extends BaseRepository {
             return Optional.empty();
         }
     }
-
 
 
     public static boolean findSaveRepository(String name) throws SQLException, URISyntaxException {

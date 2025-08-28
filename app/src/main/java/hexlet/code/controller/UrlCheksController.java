@@ -38,8 +38,8 @@ public class UrlCheksController {
                 h1 = doc.selectFirst("h1").text();
             }
             var description = "";
-            if (doc.selectFirst("description") != null) {
-                description = doc.selectFirst("h1").text();
+            if (doc.selectFirst("meta[name=description]").attr("content") != null) {
+                description = doc.selectFirst("meta[name=description]").attr("content");
             }
             var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
             UrlCheckRepository.save(urlCheck);

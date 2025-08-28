@@ -56,6 +56,7 @@ public class UrlsController {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         try {
             var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)), UrlCheckRepository.getUrlChecks(id));
+            page.setFlash(ctx.consumeSessionAttribute("addUrl"));
             ctx.render("urls/show.jte", model("page", page));
         } catch (SQLException exception) {
             throw new RuntimeException(exception);

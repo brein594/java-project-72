@@ -1,23 +1,27 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
 
-
-import kong.unirest.core.HttpResponse;
-import kong.unirest.core.Unirest;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import okhttp3.HttpUrl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +35,68 @@ public class AppTest {
     public final void setUp() throws SQLException {
         app = App.getApp();
         UrlRepository.removeAll();
+    }
+
+    @Test
+    public void testUrlRepositoryFindToId() throws SQLException {
+        var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
+        UrlRepository.save(urlExpert);
+        var id = urlExpert.getId();
+        var urlAction = UrlRepository.findToId(id).orElseThrow(() -> new NotFoundResponse("Test. url not Found"));
+        assertThat(urlAction.getName()).isEqualTo(urlExpert.getName());
+        assertThat(urlAction.getCreatedAt().toLocalDate()).isEqualTo(urlExpert.getCreatedAt().toLocalDate());
+    }
+
+    @Test
+    public void testUrlRepositoryFindToName() throws SQLException, URISyntaxException {
+        var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
+        UrlRepository.save(urlExpert);
+        assertThat(UrlRepository.findToName(urlExpert.getName())).isTrue();
+        assertThat(UrlRepository.findToName("https://wwww.exemple.ru")).isFalse();
+    }
+
+    @Test
+    public void testUrlRepositoryRemoveAll() throws SQLException, URISyntaxException {
+        var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
+        UrlRepository.save(urlExpert);
+        UrlRepository.removeAll();
+        assertThat(UrlRepository.findToName(urlExpert.getName())).isFalse();
+    }
+
+    @Test
+    public void testUrlCheckRepositorySaveAndGetLastUrlChecks() throws SQLException {
+        var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
+        UrlRepository.save(url);
+        var dateTimeEarly = LocalDateTime.now();
+        var urlCheckEarly = new UrlCheck(200, "title", "h1", "description",
+                url.getId(), dateTimeEarly);
+        UrlCheckRepository.save(urlCheckEarly);
+        var dateTimeLast = LocalDateTime.now();
+        var urlCheckLast = new UrlCheck(200, "title", "h1", "description",
+                url.getId(), dateTimeLast);
+        UrlCheckRepository.save(urlCheckLast);
+        var urlCheckAction = UrlCheckRepository.getLastUrlChecks(url.getId())
+                .orElseThrow(() -> new NotFoundResponse("Test. urlCheck not Found"));
+        assertThat(urlCheckAction.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .isEqualTo(dateTimeLast.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }
+
+    @Test
+    public void testUrlCheckRepositoryRemoveAll() throws SQLException, URISyntaxException {
+        var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
+        UrlRepository.save(url);
+        var urlCheck = new UrlCheck(200, "title", "h1", "description",
+                url.getId(), LocalDateTime.now());
+        UrlCheckRepository.save(urlCheck);
+        var id = urlCheck.getId();
+        UrlCheckRepository.removeAll();
+        assertThat(UrlCheckRepository.getUrlChecks(id)).isEmpty();
+    }
+
+    @Test
+    public void testNamedRoutesUrlsPathsLong() {
+        var actual = NamedRoutes.urlsPaths(1L);
+        assertThat(actual).isEqualTo("/urls/1");
     }
 
     @Test
@@ -59,17 +125,6 @@ public class AppTest {
             assertThat(response.code()).isEqualTo(200);
         });
     }
-    /*
-    @Test
-    public void testUrlPageException() {
-        JavalinTest.test(app, (server, client) -> {
-            var requestBody = "name=www.exemple.com";
-            var response = client.post("/urls", requestBody);
-            assertThat(response.code()).isEqualTo(500);
-            assertThat(response.body().string()).contains("Некорректный URL");
-        });
-    }
-    */
 
     @Test
     public void testUrlNotFound() throws Exception {
@@ -91,25 +146,31 @@ public class AppTest {
     }
 
     @Test
-    public void testMosk() throws IOException {
+    public void testUrlCheks() throws IOException {
+        var path = Paths.get("./src/test/resources/indexWebServer.html").toAbsolutePath().normalize();
+        var file = Files.readString(path).trim();
         MockWebServer mockWebServer = new MockWebServer();
-
-        mockWebServer.start();
         var builder = new MockResponse.Builder()
                 .code(200)
-                .body("hello, world!")
+                .body(file)
                 .build();
         mockWebServer.enqueue(builder);
-        HttpUrl baseUrl = mockWebServer.url("/exemple");
+        mockWebServer.start();
+        String baseUrl = mockWebServer.url("/example").toString();
+        //assertThat(baseUrl).isEqualTo("http://");
+        JavalinTest.test(app, (server, client) -> {
+            var url = new Url(baseUrl, LocalDateTime.now());
+            UrlRepository.save(url);
+            var id = url.getId();
+            var responseCheck = client.post("/urls/" + id.toString() + "/checks");
+            var check = UrlCheckRepository.getUrlChecks(id).getFirst();
 
-        HttpResponse<String> response = Unirest.get(baseUrl.toString())
-                .header("Accept", "application/json")
-                .asString();
-        var statusCode = response.getStatus();
-        String html = response.getBody();
-        assertThat(html).isEqualTo("hello, world!");
-        assertThat(statusCode).isEqualTo(200);
+            assertThat(check.getStatusCode()).isEqualTo(200);
+            assertThat(check.getTitle()).isEqualTo("Title web server");
+            assertThat(check.getH1()).isEqualTo("H1 head Web server");
+            assertThat(check.getDescription()).isEqualTo("content web server");
+            assertThat(responseCheck.body().string()).contains("H1 head Web server");
+        });
         mockWebServer.close();
     }
-
 }

@@ -35,7 +35,7 @@ public class UrlsController {
             var nameSave = nameURI.toURL().toString();
             //var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();
             var urlSave = new Url(nameSave, createdAt);
-            if (!UrlRepository.findSaveRepository(nameSave)) {
+            if (!UrlRepository.findToName(nameSave)) {
                 UrlRepository.save(urlSave);
                 ctx.sessionAttribute("addUrl", "Адрес добавлен");
             } else {

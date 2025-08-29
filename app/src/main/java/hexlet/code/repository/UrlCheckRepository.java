@@ -72,6 +72,14 @@ public class UrlCheckRepository extends BaseRepository {
             }
             return Optional.empty();
         }
-
+    }
+    public static void removeAll() {
+        var sql = "DELETE FROM url_checks";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

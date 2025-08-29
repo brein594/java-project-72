@@ -22,7 +22,7 @@ public class UrlCheksController {
     public static void create(Context ctx) throws SQLException {
         var urlId = ctx.pathParamAsClass("id", Long.class).get();
         var createdAt = LocalDateTime.now();
-        var url = UrlRepository.find(urlId)
+        var url = UrlRepository.findToId(urlId)
                 .orElseThrow(() -> new NotFoundResponse("Url with id " + urlId + " not found"));
         try {
             HttpResponse<String> response = Unirest.get(url.getName())

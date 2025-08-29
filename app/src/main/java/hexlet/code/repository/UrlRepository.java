@@ -44,7 +44,7 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
-    public static Optional<Url> find(Long id) throws SQLException {
+    public static Optional<Url> findToId(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -61,7 +61,7 @@ public class UrlRepository extends BaseRepository {
     }
 
 
-    public static boolean findSaveRepository(String name) throws SQLException, URISyntaxException {
+    public static boolean findToName(String name) throws SQLException, URISyntaxException {
         var sql = "SELECT * FROM urls WHERE name = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {

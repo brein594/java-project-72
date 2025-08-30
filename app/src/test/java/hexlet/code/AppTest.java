@@ -148,13 +148,19 @@ public class AppTest {
                 .build();
         mockWebServer.enqueue(builder);
         mockWebServer.start();
-        String baseUrl = mockWebServer.url("/example").toString();
+        String baseUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
         //assertThat(baseUrl).isEqualTo("http://");
         JavalinTest.test(app, (server, client) -> {
-            var url = new Url(baseUrl, LocalDateTime.now());
-            UrlRepository.save(url);
-            var id = url.getId();
-            var responseCheck = client.post("/urls/" + id.toString() + "/checks");
+            var requestBody = "url=" + baseUrl;
+            var response = client.post("/urls", requestBody);
+
+            assertThat(client.post("/urls", requestBody).code()).isEqualTo(200);
+            assertThat(UrlRepository.findToName(baseUrl)).isTrue();
+            //var url = new Url(baseUrl, LocalDateTime.now());
+            //UrlRepository.save(url);
+            //var id = url.getId();
+            var id = 1L;
+            var responseCheck = client.post("/urls/" + id + "/checks");
             var check = UrlCheckRepository.getUrlChecks(id).getFirst();
 
             assertThat(check.getStatusCode()).isEqualTo(200);
@@ -165,4 +171,44 @@ public class AppTest {
         });
         mockWebServer.close();
     }
+/*
+    @Test
+    void testStore() {
+        var path = Paths.get("./src/test/resources/indexWebServer.html").toAbsolutePath().normalize();
+        var file = Files.readString(path).trim();
+        MockWebServer mockWebServer = new MockWebServer();
+        var builder = new MockResponse.Builder()
+                .code(200)
+                .body(file)
+                .build();
+        mockWebServer.enqueue(builder);
+        mockWebServer.start();
+        String url = mockWebServer.url("/").toString().replaceAll("/$", "");
+
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=" + url;
+            assertThat(client.post("/urls", requestBody).code()).isEqualTo(200);
+
+            var actualUrl = TestUtils.getUrlByName(dataSource, url);
+            assertThat(actualUrl).isNotNull();
+            System.out.println("\n!!!!!");
+            System.out.println(actualUrl);
+
+            System.out.println("\n");
+            assertThat(actualUrl.get("name").toString()).isEqualTo(url);
+
+            client.post("/urls/" + actualUrl.get("id") + "/checks");
+
+            assertThat(client.get("/urls/" + actualUrl.get("id")).code())
+                    .isEqualTo(200);
+
+            var actualCheck = TestUtils.getUrlCheck(dataSource, (long) actualUrl.get("id"));
+            assertThat(actualCheck).isNotNull();
+            assertThat(actualCheck.get("title")).isEqualTo("Title web server");
+            assertThat(actualCheck.get("h1")).isEqualTo("H1 head Web server");
+            assertThat(actualCheck.get("description")).isEqualTo("content web server");
+        });
+    }
+
+ */
 }

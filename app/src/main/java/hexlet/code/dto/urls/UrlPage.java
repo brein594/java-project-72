@@ -17,5 +17,4 @@ import java.util.Map;
 public class UrlPage extends BasePage {
     private Url url;
     private List<UrlCheck> urlCheck;
-    private Map<String, List<ValidationError<Object>>> errors;
 }

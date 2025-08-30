@@ -52,17 +52,9 @@ public class App {
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
-            //config.fileRenderer(new JavalinJte());
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
-/*
-        var url1 = new Url("nameUrl", 12L);
-        UrlRepository.save(url1);
 
-
-        var url2 = UrlRepository.find(1L).orElseThrow(() -> new NotFoundResponse("User with id not found"));
-        System.out.println(url2.getName());
-*/
         app.get(NamedRoutes.rootPath(), ctx -> {
             var page = new BuildUrlPage();
             ctx.render("index.jte", model("page", page));

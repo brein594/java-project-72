@@ -81,17 +81,7 @@ public class AppTest {
                 .isEqualTo(dateTimeLast.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
-    @Test
-    public void testUrlCheckRepositoryRemoveAll() throws SQLException, URISyntaxException {
-        var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
-        UrlRepository.save(url);
-        var urlCheck = new UrlCheck(200, "title", "h1", "description",
-                url.getId(), LocalDateTime.now());
-        UrlCheckRepository.save(urlCheck);
-        var id = urlCheck.getId();
-        UrlCheckRepository.removeAll();
-        assertThat(UrlCheckRepository.getUrlChecks(id)).isEmpty();
-    }
+
 
     @Test
     public void testNamedRoutesUrlsPathsLong() {

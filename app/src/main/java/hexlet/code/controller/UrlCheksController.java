@@ -38,19 +38,20 @@ public class UrlCheksController {
                 h1 = doc.selectFirst("h1").text();
             }
             var description = "";
-            if (doc.selectFirst("meta[name=description]").attr("content") != null) {
+            if (!doc.select("meta[name=description]").isEmpty()) {
                 description = doc.selectFirst("meta[name=description]").attr("content");
             }
             var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
             UrlCheckRepository.save(urlCheck);
             ctx.sessionAttribute("addUrl", "Страница успешно проверена");
+
         } catch (ValidationException | UnirestException | SQLException e) {
             ctx.sessionAttribute("addUrl", "Ошибка проверки");
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         } finally {
             // Завершение всех фоновых запросов Unirest
-            Unirest.shutDown();
             ctx.redirect(NamedRoutes.urlsPaths(urlId));
+            Unirest.shutDown();
         }
     }
 

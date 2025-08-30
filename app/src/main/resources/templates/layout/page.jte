@@ -30,7 +30,8 @@
             </div>
         </div>
     </div>
-</nav>
+    </nav>
+
     <main class="flex-grow-1">
     @if( page != null && page.getFlash() != null )
         <div class="rounded-0 m-0 alert alert-dismissible fade show alert-success" role="alert">

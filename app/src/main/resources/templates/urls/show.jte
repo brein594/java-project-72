@@ -8,6 +8,18 @@
 @template.layout.page(
     page = page,
     content=@`
+    @if(page.getErrors() != null)
+        <div class="rounded-0 m-0 alert alert-dismissible fade show alert-danger" role="alert">
+            <ul>
+                @for(var validator : page.getErrors().values())
+                    @for(var error : validator)
+                        <li><p class="alert-heading">${error.getMessage()}</p></li>
+                    @endfor
+                @endfor
+            </ul>
+        </div>
+    @endif
+
     <div class="container-lg mt-5">
         <h1>Сайт: ${page.getUrl().getName()}</h1>
     <table class = "table table-border table-hover mt-3">

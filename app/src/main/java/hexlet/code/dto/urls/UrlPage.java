@@ -4,12 +4,10 @@ import hexlet.code.dto.BasePage;
 import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 
-import io.javalin.validation.ValidationError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Getter

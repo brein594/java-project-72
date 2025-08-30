@@ -55,11 +55,13 @@ public class UrlsController {
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         try {
-            var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)), UrlCheckRepository.getUrlChecks(id), null);
+            var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)),
+                    UrlCheckRepository.getUrlChecks(id), null);
             page.setFlash(ctx.consumeSessionAttribute("addUrl"));
             ctx.render("urls/show.jte", model("page", page));
         } catch (ValidationException exception) {
-            var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)), UrlCheckRepository.getUrlChecks(id), exception.getErrors() );
+            var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)),
+                    UrlCheckRepository.getUrlChecks(id), exception.getErrors());
             ctx.render("urls/show.jte", model("page", page));
             //throw new RuntimeException(exception);
         } catch (SQLException exception) {

@@ -29,8 +29,8 @@ public class UrlsController {
         var createdAt = LocalDateTime.now();
         try {
             var name = ctx.formParamAsClass("url", String.class)
-                    .check(value -> Pattern.matches("https?://(([\\w.-]+(?:/[^\\s\"']*)?)|(localhost:.*))", value), "Некорректный URL")
-                    .get();
+                    .check(value -> Pattern.matches("https?://(([\\w.-]+(?:/[^\\s\"']*)?)|(localhost:.*))",
+                            value), "Некорректный URL").get();
             var nameURI = new URI(name);
             var nameSave = nameURI.toURL().toString();
             //var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();

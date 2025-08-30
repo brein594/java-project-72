@@ -28,7 +28,7 @@ public class UrlsController {
 
         var createdAt = LocalDateTime.now();
         try {
-            var name = ctx.formParamAsClass("name", String.class)
+            var name = ctx.formParamAsClass("url", String.class)
                     .check(value -> Pattern.matches("https?://[\\w.-]+(?:/[^\\s\"']*)?", value), "Некорректный URL")
                     .get();
             var nameURI = new URI(name);
@@ -43,7 +43,7 @@ public class UrlsController {
             }
             ctx.redirect(NamedRoutes.urlsPaths());
         } catch (ValidationException e) {
-            var name = ctx.formParam("name");
+            var name = ctx.formParam("url");
             var page = new BuildUrlPage(name, e.getErrors());
             ctx.sessionAttribute("addUrl", "Некорректный URL");
             ctx.render("index.jte", model("page", page));

@@ -129,7 +129,7 @@ public class AppTest {
     @Test
     public void testAddUrl() {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "name=https://wwww.exemple.com";
+            var requestBody = "url=https://wwww.exemple.com";
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());

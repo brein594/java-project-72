@@ -109,10 +109,12 @@ public class AppTest {
     @Test
     public void testUrlPage() {
         JavalinTest.test(app, (server, client) -> {
-            var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
+            var inputUrl = "https://wwww.exemple.com";
+            var url = new Url(inputUrl, LocalDateTime.now());
             UrlRepository.save(url);
             var response = client.get("/urls/" + url.getId());
             assertThat(response.code()).isEqualTo(200);
+            assertThat(response.body().string()).contains(inputUrl);
         });
     }
 

@@ -28,17 +28,20 @@ public class App {
         return Integer.valueOf(port);
     }
 
+    private static String getJdbcDatabaseUrl() {
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL",
+                "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+    }
+
     private static TemplateEngine createTemplateEngine() {
         ClassLoader classLoader = App.class.getClassLoader();
         ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
-        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
-        return templateEngine;
+        return TemplateEngine.create(codeResolver, ContentType.Html);
     }
 
     public static Javalin getApp() throws SQLException {
         var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(System.getenv().getOrDefault("JDBC_DATABASE_URL",
-                "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;"));
+        hikariConfig.setJdbcUrl(getJdbcDatabaseUrl());
         var dataSource = new HikariDataSource(hikariConfig);
 
         var url = App.class.getClassLoader().getResourceAsStream("schema.sql");

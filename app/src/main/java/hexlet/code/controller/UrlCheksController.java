@@ -43,10 +43,12 @@ public class UrlCheksController {
             }
             var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
             UrlCheckRepository.save(urlCheck);
-            ctx.sessionAttribute("addUrl", "Страница успешно проверена");
+            ctx.sessionAttribute("type", "success");
+            ctx.sessionAttribute("flash", "Страница успешно проверена");
 
         } catch (ValidationException | UnirestException | SQLException e) {
-            ctx.sessionAttribute("addUrl", "Ошибка проверки");
+            ctx.sessionAttribute("type", "danger");
+            ctx.sessionAttribute("flash", "Ошибка проверки");
             //throw new RuntimeException(e);
         } finally {
             // Завершение всех фоновых запросов Unirest

@@ -34,9 +34,12 @@
 
     <main class="flex-grow-1">
     @if( page != null && page.getFlash() != null )
-        <div class="rounded-0 m-0 alert alert-dismissible fade show alert-success" role="alert">
+        <div class="rounded-0 m-0 alert alert-dismissible fade show alert-${page.getType()}" role="alert">
             <p class="m-0">${page.getFlash()}</p>
             <!--<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     @endif
 

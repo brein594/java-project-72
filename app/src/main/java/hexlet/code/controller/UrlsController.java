@@ -37,15 +37,18 @@ public class UrlsController {
             var urlSave = new Url(nameSave, createdAt);
             if (!UrlRepository.findToName(nameSave)) {
                 UrlRepository.save(urlSave);
-                ctx.sessionAttribute("addUrl", "Адрес добавлен");
+                ctx.sessionAttribute("type", "success");
+                ctx.sessionAttribute("flash", "Адрес добавлен");
             } else {
-                ctx.sessionAttribute("addUrl", "Страница уже существует");
+                ctx.sessionAttribute("type", "info");
+                ctx.sessionAttribute("flash", "Страница уже существует");
             }
             ctx.redirect(NamedRoutes.urlsPaths());
         } catch (ValidationException e) {
             var name = ctx.formParam("url");
             var page = new BuildUrlPage(name, e.getErrors());
-            ctx.sessionAttribute("addUrl", "Некорректный URL");
+            ctx.sessionAttribute("type", "danger");
+            ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.render("index.jte", model("page", page));
         } catch (SQLException | URISyntaxException | MalformedURLException er) {
             throw new RuntimeException(er);
@@ -57,7 +60,8 @@ public class UrlsController {
         try {
             var page = new UrlPage(UrlRepository.getUrls().get((int) (id - 1L)),
                     UrlCheckRepository.getUrlChecks(id));
-            page.setFlash(ctx.consumeSessionAttribute("addUrl"));
+            page.setType(ctx.consumeSessionAttribute("type"));
+            page.setFlash(ctx.consumeSessionAttribute("flash"));
             ctx.render("urls/show.jte", model("page", page));
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
@@ -81,7 +85,8 @@ public class UrlsController {
                 listCodeStatus.add(codeStatus);
             }
             var page = new UrlsPage(urls, listCreateAt, listCodeStatus);
-            page.setFlash(ctx.consumeSessionAttribute("addUrl"));
+            page.setType(ctx.consumeSessionAttribute("type"));
+            page.setFlash(ctx.consumeSessionAttribute("flash"));
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
             throw new RuntimeException(e);

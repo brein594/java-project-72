@@ -22,5 +22,6 @@ make -C ./app test
 ```bash
 make -C ./app check
 ```
-https://java-project-72-n0sv.onrender.com 
+
+https://java-project-72-juzd.onrender.com
 

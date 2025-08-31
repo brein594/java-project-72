@@ -6,4 +6,4 @@ COPY /app .
 
 RUN ["./gradlew","clean", "build"]
 
-CMD ["./gradlew", "run"]
+CMD ["./gradlew", "run", "--memory=\"400m\""]

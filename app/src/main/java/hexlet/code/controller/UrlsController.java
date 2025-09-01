@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -71,20 +74,17 @@ public class UrlsController {
     public static void index(Context ctx) {
         try {
             var urls = UrlRepository.getUrls();
-            ArrayList<String> listCreateAt = new ArrayList<>();
-            ArrayList<Integer> listCodeStatus = new ArrayList<>();
+            //List<Map<String, UrlCheck>> lastChecks = new ArrayList<>();
+             Map<String, UrlCheck> lastChecks= new HashMap<>();
+            //ArrayList<String> listCreateAt = new ArrayList<>();
+            //ArrayList<Integer> listCodeStatus = new ArrayList<>();
             for (var url : urls) {
                 var id = url.getId();
-                var urlCheck = UrlCheckRepository.getLastUrlChecks(id).orElse(new UrlCheck());
-                var createAt = " ";
-                if (urlCheck.getCreatedAt() != null) {
-                    createAt = urlCheck.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                }
-                var codeStatus = urlCheck.getStatusCode();
-                listCreateAt.add(createAt);
-                listCodeStatus.add(codeStatus);
+                var name = url.getName();
+                var urlCheck = UrlCheckRepository.getLastUrlChecks(id).orElse(new UrlCheck(null, "","","", id, null));
+                lastChecks.put(name, urlCheck);
             }
-            var page = new UrlsPage(urls, listCreateAt, listCodeStatus);
+            var page = new UrlsPage(lastChecks);
             page.setType(ctx.consumeSessionAttribute("type"));
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             ctx.render("urls/index.jte", model("page", page));

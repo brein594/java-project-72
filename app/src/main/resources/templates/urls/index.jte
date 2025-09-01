@@ -1,4 +1,5 @@
 @import hexlet.code.dto.urls.UrlsPage
+@import java.time.format.DateTimeFormatter
 @param UrlsPage page
 
 @template.layout.page(
@@ -16,12 +17,15 @@ content =@`
             </tr>
             </thead>
             <tbody>
-            @for (int i=0; i < page.getUrls().size(); ++i)
+            @for (var lastChek : page.getLastChecks().entrySet())
                 <tr>
-                    <td>${page.getUrls().get(i).getId()}</td>
-                    <td><a href="/urls/${page.getUrls().get(i).getId()}">${page.getUrls().get(i).getName()}</a></td>
-                    <td>${page.getListCreateAt().get(i)}</td>
-                    <td>${page.getListCodeStatus().get(i)} </td>
+                    <td>${lastChek.getValue().getUrlId()}</td>
+                    <td><a href="/urls/${lastChek.getValue().getUrlId()}">${lastChek.getKey()}</a></td>
+                    <td> @if (lastChek.getValue().getCreatedAt() != null)
+                        <p>${lastChek.getValue().getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}</p>
+                        @endif
+                    </td>
+                    <td> ${lastChek.getValue().getStatusCode()}</td>
                 </tr>
             @endfor
             </tbody>

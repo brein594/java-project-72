@@ -34,6 +34,7 @@ public class AppTest {
     @BeforeEach
     public final void setUp() throws SQLException {
         app = App.getApp();
+        UrlCheckRepository.removeAll();
         UrlRepository.removeAll();
     }
 

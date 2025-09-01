@@ -16,10 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -74,14 +71,11 @@ public class UrlsController {
     public static void index(Context ctx) {
         try {
             var urls = UrlRepository.getUrls();
-            //List<Map<String, UrlCheck>> lastChecks = new ArrayList<>();
-             Map<String, UrlCheck> lastChecks= new HashMap<>();
-            //ArrayList<String> listCreateAt = new ArrayList<>();
-            //ArrayList<Integer> listCodeStatus = new ArrayList<>();
+            Map<String, UrlCheck> lastChecks = new HashMap<>();
             for (var url : urls) {
                 var id = url.getId();
                 var name = url.getName();
-                var urlCheck = UrlCheckRepository.getLastUrlChecks(id).orElse(new UrlCheck(null, "","","", id, null));
+                var urlCheck = UrlCheckRepository.getLastUrlChecks(id).orElse(new UrlCheck(null, "", "", "", id, null));
                 lastChecks.put(name, urlCheck);
             }
             var page = new UrlsPage(lastChecks);

@@ -34,7 +34,6 @@ public class AppTest {
     @BeforeEach
     public final void setUp() throws SQLException {
         app = App.getApp();
-        UrlCheckRepository.removeAll();
         UrlRepository.removeAll();
     }
 
@@ -143,7 +142,7 @@ public class AppTest {
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());
-            assertThat(response.body().string()).contains("https://wwww.exemple.com");
+            assertThat(response.body().string()).contains(requestBody);
         });
     }
 

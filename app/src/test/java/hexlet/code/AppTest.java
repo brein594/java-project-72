@@ -142,7 +142,7 @@ public class AppTest {
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());
-            assertThat(response.body().string()).contains(requestBody);
+            assertThat(response.body().string()).contains("https://wwww.exemple.com");
         });
     }
 
@@ -172,7 +172,6 @@ public class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + baseUrl;
             var response1 = client.post(NamedRoutes.urlsPath(), requestBody);
-            var response2 = client.post(NamedRoutes.urlsPath(), requestBody);
 
             assertThat(client.post(NamedRoutes.urlsPath(), requestBody).code()).isEqualTo(200);
             assertThat(UrlRepository.findToName(baseUrl)).isTrue();

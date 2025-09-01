@@ -48,6 +48,15 @@ public class AppTest {
     }
 
     @Test
+    public void testUrlRepositoryFindToIdEmpty() throws SQLException {
+        //var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
+        //UrlRepository.save(urlExpert);
+        var id = 1L;
+        var urlAction = UrlRepository.findToId(id);
+        assertThat(urlAction.isPresent()).isFalse();
+    }
+
+    @Test
     public void testUrlRepositoryFindToName() throws SQLException, URISyntaxException {
         var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
         UrlRepository.save(urlExpert);
@@ -85,14 +94,14 @@ public class AppTest {
 
     @Test
     public void testNamedRoutesUrlsPathsLong() {
-        var actual = NamedRoutes.urlsPaths(1L);
+        var actual = NamedRoutes.urlPath(1L);
         assertThat(actual).isEqualTo("/urls/1");
     }
 
     @Test
     public void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/");
+            var response = client.get(NamedRoutes.rootPath());
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string()).contains("Анализатор страниц");
         });
@@ -101,7 +110,7 @@ public class AppTest {
     @Test
     public void testUrlsPage() {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls");
+            var response = client.get(NamedRoutes.urlsPath());
             assertThat(response.code()).isEqualTo(200);
         });
     }
@@ -112,7 +121,7 @@ public class AppTest {
             var inputUrl = "https://wwww.exemple.com";
             var url = new Url(inputUrl, LocalDateTime.now());
             UrlRepository.save(url);
-            var response = client.get("/urls/" + url.getId());
+            var response = client.get(NamedRoutes.urlPath(url.getId()));
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string()).contains(inputUrl);
         });
@@ -121,7 +130,7 @@ public class AppTest {
     @Test
     public void testUrlNotFound() throws Exception {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls/999999");
+            var response = client.get(NamedRoutes.urlPath(999999L));
             assertThat(response.code()).isEqualTo(500);
         });
     }
@@ -130,10 +139,21 @@ public class AppTest {
     public void testAddUrl() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=https://wwww.exemple.com";
-            var response = client.post("/urls", requestBody);
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());
             assertThat(response.body().string()).contains("https://wwww.exemple.com");
+        });
+    }
+
+    @Test
+    public void testAddUrlError() {
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=htt://wwww.exemple.com";
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
+            assertThat(response.code()).isEqualTo(200);
+            assertNotNull(response.body());
+            assertThat(response.body().string()).contains("Некорректный URL");
         });
     }
 
@@ -149,18 +169,15 @@ public class AppTest {
         mockWebServer.enqueue(builder);
         mockWebServer.start();
         String baseUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
-        //assertThat(baseUrl).isEqualTo("http://");
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + baseUrl;
-            var response = client.post("/urls", requestBody);
+            var response1 = client.post(NamedRoutes.urlsPath(), requestBody);
+            var response2 = client.post(NamedRoutes.urlsPath(), requestBody);
 
-            assertThat(client.post("/urls", requestBody).code()).isEqualTo(200);
+            assertThat(client.post(NamedRoutes.urlsPath(), requestBody).code()).isEqualTo(200);
             assertThat(UrlRepository.findToName(baseUrl)).isTrue();
-            //var url = new Url(baseUrl, LocalDateTime.now());
-            //UrlRepository.save(url);
-            //var id = url.getId();
-            var id = 1L;
-            var responseCheck = client.post("/urls/" + id + "/checks");
+            var id = UrlRepository.getUrls().getFirst().getId();
+            var responseCheck = client.post(NamedRoutes.checkPath(id));
             var check = UrlCheckRepository.getUrlChecks(id).getFirst();
 
             assertThat(check.getStatusCode()).isEqualTo(200);
@@ -171,44 +188,33 @@ public class AppTest {
         });
         mockWebServer.close();
     }
-/*
+
     @Test
-    void testStore() {
-        var path = Paths.get("./src/test/resources/indexWebServer.html").toAbsolutePath().normalize();
-        var file = Files.readString(path).trim();
+    public void testUrlCheksIsAbsentPage() throws IOException {
         MockWebServer mockWebServer = new MockWebServer();
         var builder = new MockResponse.Builder()
-                .code(200)
-                .body(file)
+                .code(404)
                 .build();
         mockWebServer.enqueue(builder);
         mockWebServer.start();
-        String url = mockWebServer.url("/").toString().replaceAll("/$", "");
-
+        String baseUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=" + url;
-            assertThat(client.post("/urls", requestBody).code()).isEqualTo(200);
+            var requestBody = "url=" + baseUrl;
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
 
-            var actualUrl = TestUtils.getUrlByName(dataSource, url);
-            assertThat(actualUrl).isNotNull();
-            System.out.println("\n!!!!!");
-            System.out.println(actualUrl);
+            assertThat(client.post(NamedRoutes.urlsPath(), requestBody).code()).isEqualTo(200);
+            assertThat(UrlRepository.findToName(baseUrl)).isTrue();
+            var id = UrlRepository.getUrls().getFirst().getId();
+            var responseCheck = client.post(NamedRoutes.checkPath(id));
+            var check = UrlCheckRepository.getUrlChecks(id).getFirst();
 
-            System.out.println("\n");
-            assertThat(actualUrl.get("name").toString()).isEqualTo(url);
-
-            client.post("/urls/" + actualUrl.get("id") + "/checks");
-
-            assertThat(client.get("/urls/" + actualUrl.get("id")).code())
-                    .isEqualTo(200);
-
-            var actualCheck = TestUtils.getUrlCheck(dataSource, (long) actualUrl.get("id"));
-            assertThat(actualCheck).isNotNull();
-            assertThat(actualCheck.get("title")).isEqualTo("Title web server");
-            assertThat(actualCheck.get("h1")).isEqualTo("H1 head Web server");
-            assertThat(actualCheck.get("description")).isEqualTo("content web server");
+            assertThat(check.getStatusCode()).isEqualTo(404);
+            assertThat(check.getTitle()).isEqualTo("");
+            assertThat(check.getH1()).isEqualTo("");
+            assertThat(check.getDescription()).isEqualTo("");
+            assertThat(responseCheck.body().string()).contains("");
         });
+        mockWebServer.close();
     }
 
- */
 }

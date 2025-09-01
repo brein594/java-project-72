@@ -43,7 +43,7 @@ public class UrlsController {
                 ctx.sessionAttribute("type", "info");
                 ctx.sessionAttribute("flash", "Страница уже существует");
             }
-            ctx.redirect(NamedRoutes.urlsPaths());
+            ctx.redirect(NamedRoutes.urlsPath());
         } catch (ValidationException e) {
             var name = ctx.formParam("url");
             var page = new BuildUrlPage(name, e.getErrors());

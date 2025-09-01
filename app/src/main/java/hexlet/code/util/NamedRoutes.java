@@ -5,22 +5,22 @@ public class NamedRoutes {
         return "/";
     }
 
-    public static String urlsPaths() {
+    public static String urlsPath() {
         return "/urls";
     }
 
-    public static String urlsPaths(String id) {
+    public static String urlPath(String id) {
         return "/urls/" + id;
     }
 
-    public static String urlsPaths(Long id) {
+    public static String urlPath(Long id) {
         return "/urls/" + String.valueOf(id);
     }
 
-    public static String checkPaths(String id) {
+    public static String checkPath(String id) {
         return "/urls/" + id + "/checks";
     }
-    public static String checkPaths(long id) {
+    public static String checkPath(long id) {
         return "/urls/" + String.valueOf(id) + "/checks";
     }
 }

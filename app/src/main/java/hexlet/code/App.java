@@ -2,9 +2,9 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.controller.RootController;
 import hexlet.code.controller.UrlCheksController;
 import hexlet.code.controller.UrlsController;
-import hexlet.code.dto.urls.BuildUrlPage;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
-
-import static io.javalin.rendering.template.TemplateUtil.model;
 
 
 public class App {
@@ -39,11 +37,7 @@ public class App {
         return TemplateEngine.create(codeResolver, ContentType.Html);
     }
 
-    public static Javalin getApp() throws SQLException {
-        var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(getJdbcDatabaseUrl());
-        var dataSource = new HikariDataSource(hikariConfig);
-
+    private static void createBdTables(HikariDataSource dataSource) throws SQLException {
         var url = App.class.getClassLoader().getResourceAsStream("schema.sql");
         var sql = new BufferedReader(new InputStreamReader(url))
                 .lines().collect(Collectors.joining("\n"));
@@ -51,21 +45,26 @@ public class App {
              var stmt = conn.createStatement()) {
             stmt.execute(sql);
         }
+    }
+
+    public static Javalin getApp() throws SQLException {
+        var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(getJdbcDatabaseUrl());
+        var dataSource = new HikariDataSource(hikariConfig);
+
+        App.createBdTables(dataSource);
         BaseRepository.dataSource = dataSource;
 
         var app = Javalin.create(config -> {
-            config.bundledPlugins.enableDevLogging();
+            //config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get(NamedRoutes.rootPath(), ctx -> {
-            var page = new BuildUrlPage();
-            ctx.render("index.jte", model("page", page));
-        });
-        app.get(NamedRoutes.urlsPaths("{id}"), UrlsController::show);
-        app.get(NamedRoutes.urlsPaths(), UrlsController::index);
-        app.post(NamedRoutes.urlsPaths(), UrlsController::create);
-        app.post(NamedRoutes.checkPaths("{id}"), UrlCheksController::create);
+        app.get(NamedRoutes.rootPath(), RootController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
+        app.post(NamedRoutes.checkPath("{id}"), UrlCheksController::create);
         return app;
     }
 

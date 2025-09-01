@@ -52,7 +52,7 @@ public class UrlCheksController {
             //throw new RuntimeException(e);
         } finally {
             // Завершение всех фоновых запросов Unirest
-            ctx.redirect(NamedRoutes.urlsPaths(urlId));
+            ctx.redirect(NamedRoutes.urlPath(urlId));
             Unirest.shutDown();
         }
     }

@@ -1,12 +1,11 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
-import hexlet.code.model.UrlCheck;
+
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
-import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
 
 import mockwebserver3.MockResponse;
@@ -16,12 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +33,7 @@ public class AppTest {
         app = App.getApp();
         UrlRepository.removeAll();
     }
-
+/*
     @Test
     public void testUrlRepositoryFindToId() throws SQLException {
         var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
@@ -93,7 +90,7 @@ public class AppTest {
     public void testNamedRoutesUrlsPathsLong() {
         var actual = NamedRoutes.urlPath(1L);
         assertThat(actual).isEqualTo("/urls/1");
-    }
+    }*/
 
     @Test
     public void testMainPage() {

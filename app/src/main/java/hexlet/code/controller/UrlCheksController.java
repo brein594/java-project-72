@@ -49,7 +49,6 @@ public class UrlCheksController {
         } catch (ValidationException | UnirestException | SQLException e) {
             ctx.sessionAttribute("type", "danger");
             ctx.sessionAttribute("flash", "Ошибка проверки");
-            //throw new RuntimeException(e);
         } finally {
             // Завершение всех фоновых запросов Unirest
             ctx.redirect(NamedRoutes.urlPath(urlId));

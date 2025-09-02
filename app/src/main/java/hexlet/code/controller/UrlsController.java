@@ -33,7 +33,6 @@ public class UrlsController {
                             value), "Некорректный URL").get();
             var nameURI = new URI(name);
             var nameSave = nameURI.toURL().toString();
-            //var nameSave = nameURI.getScheme() + "://" + nameURI.getAuthority();
             var urlSave = new Url(nameSave, createdAt);
             if (!UrlRepository.findToName(nameSave)) {
                 UrlRepository.save(urlSave);

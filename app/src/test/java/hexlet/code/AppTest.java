@@ -33,64 +33,7 @@ public class AppTest {
         app = App.getApp();
         UrlRepository.removeAll();
     }
-/*
-    @Test
-    public void testUrlRepositoryFindToId() throws SQLException {
-        var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
-        UrlRepository.save(urlExpert);
-        var id = urlExpert.getId();
-        var urlAction = UrlRepository.findToId(id).orElseThrow(() -> new NotFoundResponse("Test. url not Found"));
-        assertThat(urlAction.getName()).isEqualTo(urlExpert.getName());
-        assertThat(urlAction.getCreatedAt().toLocalDate()).isEqualTo(urlExpert.getCreatedAt().toLocalDate());
-    }
 
-    @Test
-    public void testUrlRepositoryFindToIdEmpty() throws SQLException {
-        var id = 1L;
-        var urlAction = UrlRepository.findToId(id);
-        assertThat(urlAction.isPresent()).isFalse();
-    }
-
-    @Test
-    public void testUrlRepositoryFindToName() throws SQLException, URISyntaxException {
-        var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
-        UrlRepository.save(urlExpert);
-        assertThat(UrlRepository.findToName(urlExpert.getName())).isTrue();
-        assertThat(UrlRepository.findToName("https://wwww.exemple.ru")).isFalse();
-    }
-
-    @Test
-    public void testUrlRepositoryRemoveAll() throws SQLException, URISyntaxException {
-        var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
-        UrlRepository.save(urlExpert);
-        UrlRepository.removeAll();
-        assertThat(UrlRepository.findToName(urlExpert.getName())).isFalse();
-    }
-
-    @Test
-    public void testUrlCheckRepositorySaveAndGetLastUrlChecks() throws SQLException {
-        var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
-        UrlRepository.save(url);
-        var dateTimeEarly = LocalDateTime.now();
-        var urlCheckEarly = new UrlCheck(200, "title", "h1", "description",
-                url.getId(), dateTimeEarly);
-        UrlCheckRepository.save(urlCheckEarly);
-        var dateTimeLast = LocalDateTime.now();
-        var urlCheckLast = new UrlCheck(200, "title", "h1", "description",
-                url.getId(), dateTimeLast);
-        UrlCheckRepository.save(urlCheckLast);
-        var urlCheckAction = UrlCheckRepository.getLastUrlChecks(url.getId())
-                .orElseThrow(() -> new NotFoundResponse("Test. urlCheck not Found"));
-        assertThat(urlCheckAction.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .isEqualTo(dateTimeLast.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-    }
-
-
-    @Test
-    public void testNamedRoutesUrlsPathsLong() {
-        var actual = NamedRoutes.urlPath(1L);
-        assertThat(actual).isEqualTo("/urls/1");
-    }*/
 
     @Test
     public void testMainPage() {

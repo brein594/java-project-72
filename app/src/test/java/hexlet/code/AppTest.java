@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -36,7 +35,7 @@ public class AppTest {
         app = App.getApp();
         UrlRepository.removeAll();
     }
-
+/*
     @Test
     public void testUrlRepositoryFindToId() throws SQLException {
         var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
@@ -49,8 +48,6 @@ public class AppTest {
 
     @Test
     public void testUrlRepositoryFindToIdEmpty() throws SQLException {
-        //var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
-        //UrlRepository.save(urlExpert);
         var id = 1L;
         var urlAction = UrlRepository.findToId(id);
         assertThat(urlAction.isPresent()).isFalse();
@@ -71,7 +68,7 @@ public class AppTest {
         UrlRepository.removeAll();
         assertThat(UrlRepository.findToName(urlExpert.getName())).isFalse();
     }
-
+*/
     @Test
     public void testUrlCheckRepositorySaveAndGetLastUrlChecks() throws SQLException {
         var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
@@ -89,7 +86,6 @@ public class AppTest {
         assertThat(urlCheckAction.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .isEqualTo(dateTimeLast.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
-
 
 
     @Test

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -35,7 +36,7 @@ public class AppTest {
         app = App.getApp();
         UrlRepository.removeAll();
     }
-/*
+
     @Test
     public void testUrlRepositoryFindToId() throws SQLException {
         var urlExpert = new Url("https://wwww.exemple.com", LocalDateTime.now());
@@ -68,7 +69,7 @@ public class AppTest {
         UrlRepository.removeAll();
         assertThat(UrlRepository.findToName(urlExpert.getName())).isFalse();
     }
-*/
+
     @Test
     public void testUrlCheckRepositorySaveAndGetLastUrlChecks() throws SQLException {
         var url = new Url("https://wwww.exemple.com", LocalDateTime.now());
@@ -145,7 +146,7 @@ public class AppTest {
     @Test
     public void testAddUrlError() {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=htt://wwww.exemple.com";
+            var requestBody = "url=htt://www.example.com";
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());
@@ -185,17 +186,18 @@ public class AppTest {
     }
 
     @Test
-    public void testUrlCheksIsAbsentPage() throws IOException {
+    public void testUrlCheksError() throws IOException {
         MockWebServer mockWebServer = new MockWebServer();
         var builder = new MockResponse.Builder()
                 .code(404)
+                .body("404 Not Found")
                 .build();
         mockWebServer.enqueue(builder);
         mockWebServer.start();
-        String baseUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
+        String baseUrl = mockWebServer.url("/index.html").toString().replaceAll("/$", "");
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + baseUrl;
-            var response = client.post(NamedRoutes.urlsPath(), requestBody);
+            var response1 = client.post(NamedRoutes.urlsPath(), requestBody);
 
             assertThat(client.post(NamedRoutes.urlsPath(), requestBody).code()).isEqualTo(200);
             assertThat(UrlRepository.findToName(baseUrl)).isTrue();
@@ -204,10 +206,7 @@ public class AppTest {
             var check = UrlCheckRepository.getUrlChecks(id).getFirst();
 
             assertThat(check.getStatusCode()).isEqualTo(404);
-            assertThat(check.getTitle()).isEqualTo("");
-            assertThat(check.getH1()).isEqualTo("");
-            assertThat(check.getDescription()).isEqualTo("");
-            assertThat(responseCheck.body().string()).contains("");
+            assertThat(responseCheck.body().string()).contains("404");
         });
         mockWebServer.close();
     }

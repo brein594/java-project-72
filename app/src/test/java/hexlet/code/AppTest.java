@@ -6,6 +6,7 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
 
 import mockwebserver3.MockResponse;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -115,6 +117,7 @@ public class AppTest {
     }
 
     @Test
+    //@Timeout(6)
     public void testUrlCheks() throws IOException {
         var path = Paths.get("./src/test/resources/indexWebServer.html").toAbsolutePath().normalize();
         var file = Files.readString(path).trim();
@@ -124,23 +127,35 @@ public class AppTest {
                 .body(file)
                 .build();
         mockWebServer.enqueue(builder);
+        mockWebServer.enqueue(builder);
+        mockWebServer.enqueue(builder);
         mockWebServer.start();
         String baseUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + baseUrl;
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
-
             assertThat(response.code()).isEqualTo(200);
             assertThat(UrlRepository.findToName(baseUrl)).isTrue();
+            assertThat(response.body().string()).contains(baseUrl);
             var id = UrlRepository.getUrls().getFirst().getId();
+            client.post(NamedRoutes.checkPath(id));
+            client.post(NamedRoutes.checkPath(id));
             var responseCheck = client.post(NamedRoutes.checkPath(id));
-            var check = UrlCheckRepository.getUrlChecks(id).getFirst();
-
+            var check = UrlCheckRepository.getUrlChecks(id).get(2);
+            var lastCheck = UrlCheckRepository.getLastUrlCheck(id).orElseThrow(() ->
+                    new NotFoundResponse("lastCheck " + id + " not found"));
+            //var lastChecks = UrlCheckRepository.getLastUrlChecks(id).orElseThrow(() ->
+             //       new NotFoundResponse("lastChecks " + id + " not found"));
+            String responseBody = responseCheck.body().string();
             assertThat(check.getStatusCode()).isEqualTo(200);
             assertThat(check.getTitle()).isEqualTo("Title web server");
             assertThat(check.getH1()).isEqualTo("H1 head Web server");
             assertThat(check.getDescription()).isEqualTo("content web server");
-            assertThat(responseCheck.body().string()).contains("H1 head Web server");
+            assertThat(responseBody).contains("H1 head Web server");
+            assertThat(responseBody).contains("3");
+            assertThat(check.getCreatedAt()).isEqualTo(lastCheck.getCreatedAt());
+            //assertThat(lastChecks.).isEqualTo(lastCheck.getCreatedAt());
+
         });
         mockWebServer.close();
     }

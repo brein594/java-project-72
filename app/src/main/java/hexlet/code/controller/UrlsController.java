@@ -74,7 +74,7 @@ public class UrlsController {
             for (var url : urls) {
                 var id = url.getId();
                 var name = url.getName();
-                var urlCheck = UrlCheckRepository.getLastUrlChecks(id).orElse(new UrlCheck(null, "", "", "", id, null));
+                var urlCheck = UrlCheckRepository.getLastUrlCheck(id).orElse(new UrlCheck(null, "", "", "", id, null));
                 lastChecks.put(name, urlCheck);
             }
             var page = new UrlsPage(lastChecks);

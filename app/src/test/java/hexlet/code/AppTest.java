@@ -26,12 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class AppTest {
-    private Javalin app;
+    private static Javalin app;
 
     @BeforeEach
-    public final void setUp() throws SQLException {
+    public final void eraseBD() throws SQLException {
         app = App.getApp();
-        UrlRepository.removeAll();
     }
 
 
@@ -45,10 +44,28 @@ public class AppTest {
     }
 
     @Test
-    public void testUrlsPage() {
+    public void testUrlsPageClear() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlsPath());
             assertThat(response.code()).isEqualTo(200);
+            var resulTest = response.body().string();
+            assertThat(resulTest).contains("Последняя проверка");
+            assertThat(resulTest).contains("Код ответа");
+        });
+    }
+
+    @Test
+    public void testUrlsPage() {
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody1 = "url=https://wwww.exemple.com";
+            client.post(NamedRoutes.urlsPath(), requestBody1);
+            var requestBody2 = "url=https://ya.ru";
+            var response = client.post(NamedRoutes.urlsPath(), requestBody2);
+            //var response = client.get(NamedRoutes.urlsPath());
+            assertThat(response.code()).isEqualTo(200);
+            var resulTest = response.body().string();
+            assertThat(resulTest).contains("wwww.exemple.com");
+            assertThat(resulTest).contains("ya.ru");
         });
     }
 
@@ -75,18 +92,21 @@ public class AppTest {
     @Test
     public void testAddUrl() {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=https://wwww.exemple.com";
+            String url = "https://wwww.exemple.com";
+            var requestBody = "url=" + url;
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());
             assertThat(response.body().string()).contains("https://wwww.exemple.com");
+            assertThat(UrlRepository.findToName(url)).isTrue();
         });
     }
 
     @Test
     public void testAddUrlError() {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=htt://www.example.com";
+            String url = "htt://wwww.exemple.com";
+            var requestBody = "url=" + url;
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertNotNull(response.body());
@@ -108,9 +128,9 @@ public class AppTest {
         String baseUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + baseUrl;
-            var response1 = client.post(NamedRoutes.urlsPath(), requestBody);
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
 
-            assertThat(client.post(NamedRoutes.urlsPath(), requestBody).code()).isEqualTo(200);
+            assertThat(response.code()).isEqualTo(200);
             assertThat(UrlRepository.findToName(baseUrl)).isTrue();
             var id = UrlRepository.getUrls().getFirst().getId();
             var responseCheck = client.post(NamedRoutes.checkPath(id));

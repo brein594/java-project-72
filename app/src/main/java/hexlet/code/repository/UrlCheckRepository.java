@@ -74,4 +74,23 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
+    public static Optional<UrlCheck> getLastUrlCheck(Long urlId) throws SQLException {
+        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, urlId);
+            var resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                var id = resultSet.getLong("id");
+                var statusCode = resultSet.getInt("status_code");
+                var title = resultSet.getString("title");
+                var h1 = resultSet.getString("h1");
+                var description = resultSet.getString("description");
+                var urlId1 = resultSet.getLong("url_id");
+                var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                return Optional.of(new UrlCheck(id, statusCode, title, h1, description, urlId1, createdAt));
+            }
+            return Optional.empty();
+        }
+    }
 }

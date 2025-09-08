@@ -147,8 +147,6 @@ public class AppTest {
             var check = UrlCheckRepository.getUrlChecks(id).get(2);
             var lastCheck = UrlCheckRepository.getLastUrlCheck(id).orElseThrow(() ->
                     new NotFoundResponse("lastCheck " + id + " not found"));
-            //var lastChecks = UrlCheckRepository.getLastUrlChecks(id).orElseThrow(() ->
-             //       new NotFoundResponse("lastChecks " + id + " not found"));
             String responseBody = responseCheck.body().string();
             assertThat(check.getStatusCode()).isEqualTo(200);
             assertThat(check.getTitle()).isEqualTo("Title web server");
@@ -157,7 +155,6 @@ public class AppTest {
             assertThat(responseBody).contains("H1 head Web server");
             assertThat(responseBody).contains("3");
             assertThat(check.getCreatedAt()).isEqualTo(lastCheck.getCreatedAt());
-            //assertThat(lastChecks.).isEqualTo(lastCheck.getCreatedAt());
             var responseIndexCheck = client.get(NamedRoutes.urlsPath());
             assertThat(responseIndexCheck.body().string())
                     .contains(lastCheck.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));

@@ -65,8 +65,6 @@ public class UrlRepository extends BaseRepository {
         var sql = "SELECT * FROM urls WHERE name = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
-            //var nameURI = new URI(name);
-            //var nameSave = nameURI.getScheme() + "//:" + nameURI.getAuthority();
             stmt.setString(1, name);
             var resultSet = stmt.executeQuery();
             return resultSet.next();

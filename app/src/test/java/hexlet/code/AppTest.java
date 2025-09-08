@@ -35,7 +35,6 @@ public class AppTest {
         app = App.getApp();
     }
 
-
     @Test
     public void testMainPage() {
         JavalinTest.test(app, (server, client) -> {

@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -70,11 +71,18 @@ public class UrlsController {
     public static void index(Context ctx) {
         try {
             var urls = UrlRepository.getUrls();
+            var urlsCheks = UrlCheckRepository.getLastUrlChecks();
             Map<String, UrlCheck> lastChecks = new HashMap<>();
             for (var url : urls) {
                 var id = url.getId();
                 var name = url.getName();
-                var urlCheck = UrlCheckRepository.getLastUrlCheck(id).orElse(new UrlCheck(null, "", "", "", id, null));
+                var urlCheck = new UrlCheck(null, "", "", "", id, null);
+                if (!urlsCheks.isEmpty()) {
+                    urlCheck = urlsCheks.stream()
+                            .filter(check -> Objects.equals(check.getUrlId(), id))
+                            .findFirst()
+                            .orElse(urlCheck);
+                }
                 lastChecks.put(name, urlCheck);
             }
             var page = new UrlsPage(lastChecks);

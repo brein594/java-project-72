@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,7 +92,7 @@ public class AppTest {
     }
 
     @Test
-    public void testAddUrl() {
+    public void testAddUrlAndClearBd() {
         JavalinTest.test(app, (server, client) -> {
             String url = "https://wwww.exemple.com";
             var requestBody = "url=" + url;
@@ -100,6 +101,9 @@ public class AppTest {
             assertNotNull(response.body());
             assertThat(response.body().string()).contains("https://wwww.exemple.com");
             assertThat(UrlRepository.findToName(url)).isTrue();
+
+            UrlRepository.removeAll();
+            assertThat(UrlRepository.findToName(url)).isFalse();
         });
     }
 
@@ -154,7 +158,9 @@ public class AppTest {
             assertThat(responseBody).contains("3");
             assertThat(check.getCreatedAt()).isEqualTo(lastCheck.getCreatedAt());
             //assertThat(lastChecks.).isEqualTo(lastCheck.getCreatedAt());
-
+            var responseIndexCheck = client.get(NamedRoutes.urlsPath());
+            assertThat(responseIndexCheck.body().string())
+                    .contains(lastCheck.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         });
         mockWebServer.close();
     }
